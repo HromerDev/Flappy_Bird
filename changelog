@@ -1,0 +1,10 @@
+22.9 23:17
+
+-fixed rotation handling of drawn sprites
+-player rotation
+-switched to raylib's native collision handling instead of custom
+-reimplemented sprite sorting depending on layers
+
+24.9 23:42
+
+-began the particle system implementation (the handler + allocating particles)
