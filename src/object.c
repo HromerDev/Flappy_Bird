@@ -18,6 +18,7 @@ void initTextures()
     textureArray[TEXTURE_PLAYER] = LoadTexture("assets/player.png");
     textureArray[TEXTURE_PIPE1] = LoadTexture("assets/pipe1.png");
     textureArray[TEXTURE_PIPE2] = LoadTexture("assets/pipe2.png");
+    textureArray[TEXTURE_PARTICLE] = LoadTexture("assets/particle.png");
 }
 
 Object* createObject(Rectangle collider, Sprite *sprite, double angle)
@@ -46,7 +47,8 @@ Sprite* createSprite(Rectangle textureArea, unsigned int texture, unsigned int l
     sprite->texture = texture; 
     sprite->layer = layer;
     sprite->angle = angle;
-    
+    sprite->opacity = 255;
+
     updateSpriteAnchors(sprite);
     dynarray_push(allSprites, sprite);
 
@@ -175,7 +177,7 @@ void drawSprites()
         Sprite *temp = allSprites->items[i];
         //Object *temp = allObjects->items[i];
         
-        DrawTexturePro(textureArray[temp->texture], (Rectangle){0,0, textureArray[temp->texture].width, textureArray[temp->texture].height}, (Rectangle) {temp->centerAnchor.x , temp->centerAnchor.y, temp->textureArea.width, temp->textureArea.height}, (Vector2){temp->textureArea.width / 2,temp->textureArea.height / 2}, temp->angle, WHITE);
+        DrawTexturePro(textureArray[temp->texture], (Rectangle){0,0, textureArray[temp->texture].width, textureArray[temp->texture].height}, (Rectangle) {temp->centerAnchor.x , temp->centerAnchor.y, temp->textureArea.width, temp->textureArea.height}, (Vector2){temp->textureArea.width / 2,temp->textureArea.height / 2}, temp->angle, (Color) {255,255,255,temp->opacity});
         /*
         DrawCircle(temp->topLeftAnchor.x, temp->topLeftAnchor.y, 4, GREEN);
         DrawCircle(temp->topRightAnchor.x, temp->topRightAnchor.y, 4, GREEN);

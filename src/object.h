@@ -12,6 +12,7 @@ typedef struct
     Vector2 bottomRightAnchor;    
     Vector2 centerAnchor;
     Rectangle textureArea;
+    unsigned short opacity;
     unsigned int texture;
     double angle;
     unsigned int layer;
@@ -34,12 +35,14 @@ enum Textures
 {
     TEXTURE_PIPE1,
     TEXTURE_PIPE2,
+    TEXTURE_PARTICLE,
     TEXTURE_PLAYER,
 };
 
 enum ObjectLayers 
 {
     LAYERS_PLAYER,
+    LAYERS_PARTICLE,
     LAYERS_PIPES,
 };
 

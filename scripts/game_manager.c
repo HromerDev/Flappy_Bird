@@ -13,7 +13,12 @@ void start() //initializations
     initPlayer(35, 35);
     initPipePairs();
 
-    particle = createParticleHandlerOnObject(player.playerObject, (Vector2){0,0}, NULL, 10);
+    particle = createParticleHandlerOnObject(player.playerObject, (Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
+    configureParticleHandler(particle, (Vector2){0, 20,}, 
+                                        (Vector2){0, 360},
+                                        (Vector2){2,20},
+                                        100,
+                                        0.5, 0.01);
 }
 
 void update() //input handling, logic
@@ -42,7 +47,12 @@ void update() //input handling, logic
         initPipePairs();
         initParticleSystem();
 
-        particle = createParticleHandlerOnObject(player.playerObject, (Vector2){0,0}, NULL, 10);
+        particle = createParticleHandlerOnObject(player.playerObject, (Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
+        configureParticleHandler(particle, (Vector2){0, 20,}, 
+                                        (Vector2){0, 360},
+                                        (Vector2){2,20},
+                                        100,
+                                        0.5, 0.01);
     }
 
     
@@ -55,6 +65,9 @@ void update() //input handling, logic
     processPlayerAcceleration();
     processPlayerRotation();
     
+    moveParticleHandlers();
+    emitParticles();
+    handleParticles();
 
     movePipePairs();
 

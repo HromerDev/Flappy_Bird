@@ -13,11 +13,14 @@ int main()
     while (!WindowShouldClose()) 
     {        
         update();
-        
+        moveParticleHandlers();
+
         BeginDrawing();
-            drawSprites();
+            
+            drawSprites();   
+            drawParticles();
+            
             draw();
-            moveParticleHandlers();
         EndDrawing();
         
         iterateTimers();
