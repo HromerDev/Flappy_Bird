@@ -14,54 +14,39 @@ void initParticleSystem()
     dynarray_init(allParticles, 1);
 }
 
-void particleHandlerCore(ParticleHandler* particleHandler, Sprite* sprite) 
-{
-    particleHandler->sprite = sprite;
-    particleHandler->currentParticleEmitted = 0;
-
-    dynarray_push(allParticleHandlers, particleHandler);    
-}
-
 ParticleHandler* createParticleHandler(Vector2 origin, Sprite* sprite) 
 {
     ParticleHandler* particleHandler = malloc(sizeof(ParticleHandler));
     particleHandler->origin = origin;
     particleHandler->originObject = NULL;
 
-    particleHandlerCore(particleHandler, sprite);
+    particleHandler->sprite = sprite;
+    particleHandler->currentParticleEmitted = 0;
+
+    dynarray_push(allParticleHandlers, particleHandler);
+
     return particleHandler;
 }
 
-ParticleHandler* createParticleHandlerOnObject(Object* object, Vector2 offset, Sprite* sprite) 
-{
-    ParticleHandler* particleHandler = malloc(sizeof(ParticleHandler));
-
-    particleHandler->originObject = object;
-    particleHandler->offset = offset;
-
-    particleHandler->origin = Vector2Add(object->centerAnchor, offset);
-
-    particleHandlerCore(particleHandler, sprite);
-    return particleHandler;
-}
-
-void configureParticleHandler(ParticleHandler* particleHandler, Vector2 particleMinMaxSpawnDistanceRange, Vector2 particleMinMaxRotationRange, Vector2 particleMinMaxSizeRange, unsigned short particleAmount, float particleAliveTime, float particleDelay)
+void configureParticleHandler(ParticleHandler* particleHandler, Vector2 particleMinMaxSpawnDistanceRange, Vector2 particleMinMaxRotationRange, Vector2 particleMinMaxSizeRange, float particleAliveTime, int particlesPerSecond)
 {
     particleHandler->particleMinMaxSpawnDistanceRange = particleMinMaxSpawnDistanceRange;
     particleHandler->particleMinMaxRotationRange = particleMinMaxRotationRange;
     particleHandler->particleMinMaxSizeRange = particleMinMaxSizeRange;
     particleHandler->particleAliveTime = particleAliveTime;
-    particleHandler->particleSpawnTimer = createTimer(particleDelay);
+    particleHandler->particleSpawnTimer = createTimer(1.0 / particlesPerSecond);
     particleHandler->particleSpawnTimer->isActive = true;
-    particleHandler->particleAmount = particleAmount;
+    particleHandler->particleAmount = particlesPerSecond * particleAliveTime;
 
-    particleHandler->particles = malloc(sizeof(Particle*) * particleAmount);
+    particleHandler->particles = malloc(sizeof(Particle*) * particleHandler->particleAmount);
 
-    for(int i = 0; i < particleAmount; i++) 
+    for(int i = 0; i < particleHandler->particleAmount; i++) 
     {        
         Particle* particle = malloc(sizeof(Particle));
         particle->particleAliveTime = particleAliveTime;
         particle->isEnabled = false;
+
+        particle->sprite = createSprite((Rectangle) {0,0,0,0}, particleHandler->sprite->texture, particleHandler->sprite->layer, 0); 
 
         dynarray_push(allParticles, particle);  
 
@@ -69,18 +54,24 @@ void configureParticleHandler(ParticleHandler* particleHandler, Vector2 particle
     }
 }
 
-void moveParticleHandlers() 
+void moveParticleHandler(ParticleHandler* particleHandler, Vector2 newPosition) 
 {
-    for(int i = 0; i < allParticleHandlers->size; i++) 
-    {
-        ParticleHandler* temp = allParticleHandlers->items[i];
+    particleHandler->origin = newPosition;
+    DrawCircleV(particleHandler->origin, 10, GREEN);
+}
 
-        if(temp->originObject == NULL)
-            continue;
-
-        temp->origin = Vector2Add(temp->originObject->centerAnchor, temp->offset);     
-        //DrawCircleV(temp->origin, 10, GREEN);   
+void moveParticlesRelative(ParticleHandler* particleHandler, Vector2 newPosition) 
+{
+    for (size_t i = 0; i < particleHandler->particleAmount; i++)
+    {        
+        if(particleHandler->particles[i]->isEnabled)  
+        {
+            particleHandler->particles[i]->origin = Vector2Add(particleHandler->particles[i]->origin, newPosition);
+            particleHandler->particles[i]->sprite->centerAnchor = particleHandler->particles[i]->origin;
+        }
+              
     }
+    
 }
 
 void handleParticles() 
@@ -99,36 +90,46 @@ void handleParticles()
         if(temp->timeAlive > temp->particleAliveTime)
             temp->isEnabled = false;
 
-        temp->opacity = 255 * (1.0f - temp->timeAlive / temp->particleAliveTime);
+        temp->sprite->opacity = 255 * (1.0f - temp->timeAlive / temp->particleAliveTime);
         
     }
 }
 
-void emitParticles() 
+int returnParticleAliveAmount(ParticleHandler* particleHandler) 
 {
-    for(int i = 0; i < allParticleHandlers->size; i++) 
+    short sum = 0;
+    for (size_t i = 0; i < particleHandler->particleAmount; i++)
     {
-        ParticleHandler *temp = allParticleHandlers->items[i];
-
-        if(isTimerReady(temp->particleSpawnTimer)) 
-        {
-            int randomParticleDistanceX = GetRandomValue((int)temp->particleMinMaxSpawnDistanceRange.x, (int)temp->particleMinMaxSpawnDistanceRange.y);            
-            int randomParticleDistanceY = GetRandomValue((int)temp->particleMinMaxSpawnDistanceRange.x, (int)temp->particleMinMaxSpawnDistanceRange.y);
-
-            temp->sprite->opacity = temp->particles[temp->currentParticleEmitted]->opacity;
-
-            temp->particles[temp->currentParticleEmitted]->origin = Vector2Add(temp->origin, (Vector2){randomParticleDistanceX, randomParticleDistanceY});
-            temp->particles[temp->currentParticleEmitted]->angle = GetRandomValue(temp->particleMinMaxRotationRange.x, temp->particleMinMaxRotationRange.y);
-            temp->particles[temp->currentParticleEmitted]->widthHeight = GetRandomValue(temp->particleMinMaxSizeRange.x, temp->particleMinMaxSizeRange.y);
-            temp->particles[temp->currentParticleEmitted]->timeAlive = 0;
-            temp->particles[temp->currentParticleEmitted]->isEnabled = true;
-            temp->currentParticleEmitted++;
-
-            temp->currentParticleEmitted %= temp->particleAmount;
-
-            allParticleHandlers->items[i] = temp;
-        }
+        if(particleHandler->particles[i]->isEnabled)
+            sum++;
     }
+    
+    particleHandler->particleActiveAmount = sum;
+    return particleHandler->particleActiveAmount;
+}
+
+void emitParticles(ParticleHandler* particleHandler) 
+{
+    if(isTimerReady(particleHandler->particleSpawnTimer)) 
+    {
+        int randomParticleDistanceX = GetRandomValue((int)particleHandler->particleMinMaxSpawnDistanceRange.x, (int)particleHandler->particleMinMaxSpawnDistanceRange.y);            
+        int randomParticleDistanceY = GetRandomValue((int)particleHandler->particleMinMaxSpawnDistanceRange.x, (int)particleHandler->particleMinMaxSpawnDistanceRange.y);
+
+        //particleHandler->sprite->opacity = particleHandler->particles[particleHandler->currentParticleEmitted]->opacity;
+
+        particleHandler->particles[particleHandler->currentParticleEmitted]->origin = Vector2Add(particleHandler->origin, (Vector2){randomParticleDistanceX, randomParticleDistanceY});
+        particleHandler->particles[particleHandler->currentParticleEmitted]->sprite->angle = GetRandomValue(particleHandler->particleMinMaxRotationRange.x, particleHandler->particleMinMaxRotationRange.y);
+        particleHandler->particles[particleHandler->currentParticleEmitted]->sprite->textureArea.width = GetRandomValue(particleHandler->particleMinMaxSizeRange.x, particleHandler->particleMinMaxSizeRange.y);
+        particleHandler->particles[particleHandler->currentParticleEmitted]->sprite->textureArea.height = particleHandler->particles[particleHandler->currentParticleEmitted]->sprite->textureArea.width;
+        particleHandler->particles[particleHandler->currentParticleEmitted]->timeAlive = 0;
+        particleHandler->particles[particleHandler->currentParticleEmitted]->isEnabled = true;
+        particleHandler->currentParticleEmitted++;
+
+        particleHandler->currentParticleEmitted %= particleHandler->particleAmount;
+
+        //allParticleHandlers->items[i] = temp;
+        }
+
 }
 
 void drawParticles() 
@@ -144,7 +145,7 @@ void drawParticles()
             if(!temp->particles[j]->isEnabled)
                 continue;;
             
-            DrawTexturePro(textureArray[temp->sprite->texture], (Rectangle){0,0, textureArray[temp->sprite->texture].width, textureArray[temp->sprite->texture].height}, (Rectangle) {tempParticle->origin.x , tempParticle->origin.y, tempParticle->widthHeight, tempParticle->widthHeight}, (Vector2){tempParticle->widthHeight / 2, tempParticle->widthHeight / 2}, tempParticle->angle, (Color) {255,255,255,tempParticle->opacity});
+            //DrawTexturePro(textureArray[temp->sprite->texture], (Rectangle){0,0, textureArray[temp->sprite->texture].width, textureArray[temp->sprite->texture].height}, (Rectangle) {tempParticle->origin.x , tempParticle->origin.y, tempParticle->widthHeight, tempParticle->widthHeight}, (Vector2){tempParticle->widthHeight / 2, tempParticle->widthHeight / 2}, tempParticle->angle, (Color) {255,255,255,tempParticle->opacity});
         }
     }
 }

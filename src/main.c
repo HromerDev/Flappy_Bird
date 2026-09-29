@@ -9,31 +9,27 @@ int main()
 {
     srand(time(NULL));
     start();
+    gameStart();
     
     while (!WindowShouldClose()) 
     {        
         update();
-        moveParticleHandlers();
 
         BeginDrawing();
             
             drawSprites();   
-            drawParticles();
+            //drawParticles();
             
             draw();
         EndDrawing();
         
         iterateTimers();
     }       
-    
-    freeSprites();
-    freeObjects();
-    freeTimers();
-    freePipes();
-    freeParticles();
-    
+        
     end();
+    freeCoreComponents();
     CloseWindow();        
 
     return 0;
 }
+

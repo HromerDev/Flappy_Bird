@@ -120,12 +120,6 @@ void updateObjectAnchors(Object *object)
 
 void updateSpriteAnchors(Sprite *sprite) 
 {
-    sprite->topLeftAnchor = (Vector2){sprite->textureArea.x, sprite->textureArea.y}; 
-    sprite->topRightAnchor = (Vector2){sprite->textureArea.x + sprite->textureArea.width, sprite->textureArea.y};
-    
-    sprite->bottomLeftAnchor = (Vector2){sprite->textureArea.x, sprite->textureArea.y + sprite->textureArea.height};
-    sprite->bottomRightAnchor = (Vector2){sprite->textureArea.x + sprite->textureArea.width, sprite->textureArea.y + sprite->textureArea.height};
-
     sprite->centerAnchor = (Vector2){sprite->textureArea.x + sprite->textureArea.width / 2, sprite->textureArea.y + sprite->textureArea.height / 2};
 }
 

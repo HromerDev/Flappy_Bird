@@ -16,9 +16,14 @@
 #define FPS 0
 #define WINDOWNAME "FLAPPY BIRD (DEMO)"
 
+extern ParticleHandler* particle;
+
 void start();
+void gameStart();
+void restart();
 void update();
 void draw();
 void end();
+void freeCoreComponents();
 
 #endif

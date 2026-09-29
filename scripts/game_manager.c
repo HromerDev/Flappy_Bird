@@ -6,56 +6,46 @@ void start() //initializations
 {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, WINDOWNAME);
     SetTargetFPS(FPS); 
+}
+
+void gameStart()
+{
     initTextures();
     initTimer();
     initParticleSystem();
 
     initPlayer(35, 35);
     initPipePairs();
+    score = 0;
 
-    particle = createParticleHandlerOnObject(player.playerObject, (Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
-    configureParticleHandler(particle, (Vector2){0, 20,}, 
+    particle = createParticleHandler((Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
+    configureParticleHandler(particle, (Vector2){0, 5,}, 
                                         (Vector2){0, 360},
-                                        (Vector2){2,20},
-                                        100,
-                                        0.5, 0.01);
+                                        (Vector2){25,45},                                        
+                                        0.5, 20);
 }
 
+
+void restart() 
+{
+    freeCoreComponents();
+    gameStart();
+}
 void update() //input handling, logic
 {   
     if(checkPipePairCollisions()) 
     {           
         gameOver = true;
 
-        if(IsKeyPressed(KEY_SPACE))
+        if(IsKeyPressed(KEY_SPACE)) 
+        {
             gameOver = false;
-
-        if(gameOver)
-            return;
-
-        score = 0;
-        freeSprites();
-        freeObjects();
-        freeTimers();
-        freePipes();
-        freeParticles();
-
-        initTextures();
-        initTimer();
-
-        initPlayer(35, 35);
-        initPipePairs();
-        initParticleSystem();
-
-        particle = createParticleHandlerOnObject(player.playerObject, (Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
-        configureParticleHandler(particle, (Vector2){0, 20,}, 
-                                        (Vector2){0, 360},
-                                        (Vector2){2,20},
-                                        100,
-                                        0.5, 0.01);
+            restart();
+            
+        }     
+        return;
     }
 
-    
     if(IsKeyDown(KEY_SPACE))
     playerJump();
     else   
@@ -64,14 +54,15 @@ void update() //input handling, logic
     processPlayerMovement();
     processPlayerAcceleration();
     processPlayerRotation();
-    
-    moveParticleHandlers();
-    emitParticles();
-    handleParticles();
 
     movePipePairs();
-
     checkPipePairCollisions(); 
+
+    handleParticles();
+
+    moveParticleHandler(particle, player.playerObject->centerAnchor);    
+    moveParticlesRelative(particle, (Vector2){-275 * GetFrameTime(), 0});
+    
 }
 
 void draw() //drawing a frame (primarely for text)
@@ -93,9 +84,20 @@ void draw() //drawing a frame (primarely for text)
     DrawText(TextFormat("Acceleration: %.2f", player.acceleration), 1, SCREENHEIGHT - 120, 20, BLACK);
     DrawText(TextFormat("Angle: %.2f", player.playerObject->sprite->angle), 1, SCREENHEIGHT - 140, 20, BLACK);
     (layersSortedCorrectly()) ? DrawText("Layers sorted correctly", 1, SCREENHEIGHT - 160, 20, GREEN) : DrawText("Layers sorted wrongly", 1, SCREENHEIGHT - 160, 20, RED);
+    DrawText(TextFormat("Particles Active: %d/%d", returnParticleAliveAmount(particle), particle->particleAmount), 1, SCREENHEIGHT - 180, 20, BLACK);
 }
 
+
 void end() 
-{
+{ 
     
+}
+
+void freeCoreComponents() 
+{
+    freeSprites();
+    freeObjects();
+    freeTimers();
+    freePipes();
+    freeParticles();
 }

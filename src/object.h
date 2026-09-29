@@ -5,11 +5,7 @@
 extern Texture2D textureArray[10];
 
 typedef struct 
-{
-    Vector2 topLeftAnchor;
-    Vector2 topRightAnchor;
-    Vector2 bottomLeftAnchor;
-    Vector2 bottomRightAnchor;    
+{    
     Vector2 centerAnchor;
     Rectangle textureArea;
     unsigned short opacity;
@@ -40,9 +36,9 @@ enum Textures
 };
 
 enum ObjectLayers 
-{
-    LAYERS_PLAYER,
+{ 
     LAYERS_PARTICLE,
+    LAYERS_PLAYER,
     LAYERS_PIPES,
 };
 

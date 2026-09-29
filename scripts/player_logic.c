@@ -44,4 +44,8 @@ void playerJump()
     player.holdTimer -= 400 * GetFrameTime();    
     if(player.playerObject->topLeftAnchor.y > 0)
         player.acceleration = -300 + player.holdTimer;
+    else
+        player.acceleration = 0;
+
+    emitParticles(particle);
 }

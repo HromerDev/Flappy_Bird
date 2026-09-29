@@ -8,10 +8,8 @@
 typedef struct 
 {
     Vector2 origin;
+    Sprite* sprite; 
     bool isEnabled;
-    float widthHeight;
-    float angle;
-    float opacity;
     float timeAlive;
     float particleAliveTime;
     float velocity;
@@ -20,6 +18,7 @@ typedef struct
 typedef struct 
 {
     unsigned short particleAmount;
+    unsigned short particleActiveAmount;
     Vector2 particleMinMaxSpawnDistanceRange;
     Vector2 particleMinMaxRotationRange;
     Vector2 particleMinMaxSizeRange;
@@ -32,14 +31,16 @@ typedef struct
     Particle** particles;
     Sprite* sprite; 
     Timer* particleSpawnTimer;
+    
 } ParticleHandler;
 
 void initParticleSystem();
 ParticleHandler* createParticleHandler(Vector2 origin, Sprite* sprite);
-ParticleHandler* createParticleHandlerOnObject(Object* object, Vector2 offset, Sprite* sprite);
-void configureParticleHandler(ParticleHandler* particleHandler, Vector2 particleMinMaxSpawnDistanceRange, Vector2 particleMinMaxRotationRange, Vector2 particleMinMaxSizeRange, unsigned short particleAmount, float particleAliveTime, float particleDelay);
-void moveParticleHandlers();
-void emitParticles();
+void configureParticleHandler(ParticleHandler* particleHandler, Vector2 particleMinMaxSpawnDistanceRange, Vector2 particleMinMaxRotationRange, Vector2 particleMinMaxSizeRange, float particleAliveTime, int particlesPerSecond);
+void moveParticleHandler(ParticleHandler* particleHandler, Vector2 newPosition);
+void moveParticlesRelative(ParticleHandler* particleHandler, Vector2 newPosition);
+void emitParticles(ParticleHandler* particleHandler);
+int returnParticleAliveAmount(ParticleHandler* particleHandler);
 void handleParticles();
 void drawParticles();
 void freeParticles();

@@ -35,7 +35,7 @@ bool isTimerReady(Timer *timer)
     if(timer->timeElapsed < timer->timePeriod)
         return false;
     
-    timer->timeElapsed -= timer->timePeriod;
+    timer->timeElapsed = 0;
     return true;
 }
 
