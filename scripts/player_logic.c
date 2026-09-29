@@ -41,7 +41,7 @@ void processPlayerAcceleration()
 
 void playerJump() 
 {
-    player.holdTimer -= 400 * GetFrameTime();    
+    player.holdTimer -= 450 * GetFrameTime();    
     if(player.playerObject->topLeftAnchor.y > 0)
         player.acceleration = -300 + player.holdTimer;
     else

@@ -18,7 +18,7 @@ void initTextures()
     textureArray[TEXTURE_PLAYER] = LoadTexture("assets/player.png");
     textureArray[TEXTURE_PIPE1] = LoadTexture("assets/pipe1.png");
     textureArray[TEXTURE_PIPE2] = LoadTexture("assets/pipe2.png");
-    textureArray[TEXTURE_PARTICLE] = LoadTexture("assets/particle.png");
+    textureArray[TEXTURE_PARTICLE] = LoadTexture("assets/particle4.png");
 }
 
 Object* createObject(Rectangle collider, Sprite *sprite, double angle)
