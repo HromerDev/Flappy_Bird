@@ -7,10 +7,6 @@
 #include "../src/dynamic_array.h"
 #include "../src/particle_system.h"
 
-#include "player_logic.h"
-#include "pipe_logic.h"
-
-
 #define SCREENWIDTH 800
 #define SCREENHEIGHT 600
 #define FPS 0

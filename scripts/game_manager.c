@@ -1,4 +1,6 @@
 #include "game_manager.h"
+#include "pipe_logic.h"
+#include "player_logic.h"
 
 bool gameOver = false;
 ParticleHandler* particle;

@@ -1,5 +1,5 @@
 #include "pipe_logic.h"
-
+#include "player_logic.h"
 #include <stdio.h>
 
 float pipeSpeed = 275;
