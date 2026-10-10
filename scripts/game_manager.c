@@ -1,8 +1,11 @@
 #include "game_manager.h"
 #include "pipe_logic.h"
 #include "player_logic.h"
-
+int SCREENWIDTH = 0;
+int SCREENHEIGHT = 0;
+int FPS = 0;
 bool gameOver = false;
+
 ParticleHandler* particle;
 void start() //initializations
 {

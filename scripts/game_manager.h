@@ -7,9 +7,10 @@
 #include "../src/dynamic_array.h"
 #include "../src/particle_system.h"
 
-#define SCREENWIDTH 800
-#define SCREENHEIGHT 600
-#define FPS 0
+extern int SCREENWIDTH;
+extern int SCREENHEIGHT;
+
+extern int FPS;
 #define WINDOWNAME "FLAPPY BIRD (DEMO)"
 
 extern ParticleHandler* particle;
