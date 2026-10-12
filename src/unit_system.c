@@ -1,17 +1,25 @@
 #include "unit_system.h"
-#include "scripts/game_manager.h"
+#include "../scripts/game_manager.h"
+#include "raylib.h"
 
-int UNIT_PIXEL_SIZE = 0;
+double UNIT_PIXEL_SIZE = 0;
+int scaler = 60;
 
 void recalculateUnitSize(int newScreenWidth, int newScreenHeight)
 {
-    int shortestScreenSide = (newScreenWidth < newScreenHeight) ? newScreenWidth : newScreenHeight;
-      
+    double shortestScreenSide = (newScreenWidth < newScreenHeight) ? newScreenWidth : newScreenHeight;
     
-
-    UNIT_PIXEL_SIZE = newUnitSize;
+    double newUnitSize = shortestScreenSide / scaler;
     SCREENWIDTH = newScreenWidth;
     SCREENHEIGHT = newScreenHeight;
+    UNIT_PIXEL_SIZE = round(newUnitSize);
+    
+    for(size_t i = 0; i < scaler; i++)
+    {
 
+        DrawRectangleLines(SCREENWIDTH - UNIT_PIXEL_SIZE * 2, i * UNIT_PIXEL_SIZE, UNIT_PIXEL_SIZE, UNIT_PIXEL_SIZE, GREEN);
+    }
+
+    SetWindowSize(SCREENWIDTH, SCREENHEIGHT);
 }
     

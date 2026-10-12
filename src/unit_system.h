@@ -1,7 +1,7 @@
 #ifndef UNIT_SYSTEM_H
 #define UNIT_SYSTEM_H
 
-extern int UNIT_PIXEL_SIZE;
+extern double UNIT_PIXEL_SIZE;
     
 void recalculateUnitSize(int newScreenWidth, int newScreenHeight);
 

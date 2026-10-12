@@ -1,8 +1,8 @@
 #include "game_manager.h"
 #include "pipe_logic.h"
 #include "player_logic.h"
-int SCREENWIDTH = 0;
-int SCREENHEIGHT = 0;
+int SCREENWIDTH = 500;
+int SCREENHEIGHT = 500;
 int FPS = 0;
 bool gameOver = false;
 
@@ -10,7 +10,7 @@ ParticleHandler* particle;
 void start() //initializations
 {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, WINDOWNAME);
-    SetTargetFPS(FPS); 
+    SetTargetFPS(FPS);
 }
 
 void gameStart()
@@ -37,7 +37,7 @@ void restart()
     gameStart();
 }
 void update() //input handling, logic
-{   
+{/*   
     if(checkPipePairCollisions()) 
     {           
         gameOver = true;
@@ -46,7 +46,7 @@ void update() //input handling, logic
         {
             gameOver = false;
             restart();
-            
+                        
         }     
         return;
     }
@@ -67,7 +67,7 @@ void update() //input handling, logic
 
     moveParticleHandler(particle, player.playerObject->centerAnchor);    
     moveParticlesRelative(particle, (Vector2){-275 * GetFrameTime(), 0});
-    
+  */  
 }
 
 void draw() //drawing a frame (primarely for text)

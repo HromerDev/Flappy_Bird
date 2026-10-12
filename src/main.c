@@ -4,6 +4,7 @@
 #include "../scripts/pipe_logic.h"
 #include "../scripts/game_manager.h"
 #include <time.h>
+#include "unit_system.h"
 
 int main()
 {
@@ -19,7 +20,7 @@ int main()
             
             drawSprites();   
             //drawParticles();
-            
+            recalculateUnitSize(1000, 1000);
             draw();
         EndDrawing();
         
