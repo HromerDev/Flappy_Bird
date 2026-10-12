@@ -1,11 +1,13 @@
 #include "dynamic_array.h"
+#include "unit_system.h" 
 #include "object.h"
 #include "stdio.h"
 #include "stdlib.h"
+#include <time.h>
 
 Texture2D textureArray[10];
 dynarray *allObjects;
-dynarray *allSprites;
+dynarray *allSprites;   
 
 void initTextures() 
 {
@@ -24,8 +26,10 @@ void initTextures()
 Object* createObject(Rectangle collider, Sprite *sprite, double angle)
 {
     Object *object = malloc(sizeof(Object));
+    object->originalCollider = collider;
 
-    object->collider = collider;
+    object->collider = (Rectangle){collider.x * UNIT_PIXEL_SIZE, collider.y * UNIT_PIXEL_SIZE, collider.width * UNIT_PIXEL_SIZE, collider.height * UNIT_PIXEL_SIZE};
+
     object->sprite = sprite;
     object->angle = angle;
     
@@ -42,8 +46,14 @@ Object* createObject(Rectangle collider, Sprite *sprite, double angle)
 Sprite* createSprite(Rectangle textureArea, unsigned int texture, unsigned int layer, double angle)
 {
     Sprite* sprite = malloc(sizeof(Sprite));    
+    sprite->originalArea = textureArea;
 
-    sprite->textureArea = textureArea;
+    sprite->textureArea = (Rectangle){
+        textureArea.x * UNIT_PIXEL_SIZE,
+        textureArea.y * UNIT_PIXEL_SIZE,
+        textureArea.width * UNIT_PIXEL_SIZE,
+        textureArea.height * UNIT_PIXEL_SIZE
+    };
     sprite->texture = texture; 
     sprite->layer = layer;
     sprite->angle = angle;
@@ -133,16 +143,16 @@ void moveSprite(Sprite *sprite, float x, float y)
 
 void moveSpriteRelative(Sprite *sprite, float x, float y)
 {
-    sprite->textureArea.x += x;
-    sprite->textureArea.y += y;
+    sprite->textureArea.x += x * UNIT_PIXEL_SIZE;
+    sprite->textureArea.y += y * UNIT_PIXEL_SIZE;
 
     updateSpriteAnchors(sprite);
 }
 
 void moveObject(Object *object, float x, float y)
 {
-    object->collider.x = x;
-    object->collider.y = y;
+    object->collider.x = x * UNIT_PIXEL_SIZE;
+    object->collider.y = y * UNIT_PIXEL_SIZE;
 
     updateObjectAnchors(object);
 
@@ -153,13 +163,19 @@ void moveObject(Object *object, float x, float y)
 
 void moveObjectRelative(Object *object, float x, float y) 
 {
-    object->collider.x += x;
-    object->collider.y += y;
+    object->collider.x += x * UNIT_PIXEL_SIZE;
+    object->collider.y += y * UNIT_PIXEL_SIZE;
 
     updateObjectAnchors(object);
 
     if(object->sprite != NULL)     
-        moveSpriteRelative(object->sprite, x, y);
+        moveSprite(
+            object->sprite,
+            object->centerAnchor.x + object->spriteOffset.x
+                - object->sprite->textureArea.width / 2,
+            object->centerAnchor.y + object->spriteOffset.y
+                - object->sprite->textureArea.height / 2
+        );
 }
 
 void drawSprites()
@@ -180,7 +196,7 @@ void drawSprites()
         */
     }  
     
-    /*
+   /* 
     for(int i = 0; i < allObjects->size; i++) 
     {
         Object *temp = allObjects->items[i];
@@ -191,7 +207,62 @@ void drawSprites()
         DrawCircle(temp->bottomRightAnchor.x, temp->bottomRightAnchor.y, 4, GOLD);
         
     }
-    */
+    */   
+}
+void recalculateAllUnits()
+{
+    if (allObjects != NULL)
+    {
+        for (int i = 0; i < allObjects->size; i++)
+        {
+            Object *object = allObjects->items[i];
+
+            object->collider = (Rectangle){
+                object->originalCollider.x * UNIT_PIXEL_SIZE,
+                object->originalCollider.y * UNIT_PIXEL_SIZE,
+                object->originalCollider.width * UNIT_PIXEL_SIZE,
+                object->originalCollider.height * UNIT_PIXEL_SIZE
+            };
+
+            updateObjectAnchors(object);
+        }
+    }
+
+    if (allSprites != NULL)
+    {
+        for (int i = 0; i < allSprites->size; i++)
+        {
+            Sprite *sprite = allSprites->items[i];
+
+            sprite->textureArea = (Rectangle){
+                sprite->originalArea.x * UNIT_PIXEL_SIZE,
+                sprite->originalArea.y * UNIT_PIXEL_SIZE,
+                sprite->originalArea.width * UNIT_PIXEL_SIZE,
+                sprite->originalArea.height * UNIT_PIXEL_SIZE
+            };
+
+            updateSpriteAnchors(sprite);
+        }
+    }
+
+    if (allObjects != NULL)
+    {
+        for (int i = 0; i < allObjects->size; i++)
+        {
+            Object *object = allObjects->items[i];
+
+            if (object->sprite != NULL)
+            {
+                moveSprite(
+                    object->sprite,
+                    object->centerAnchor.x + object->spriteOffset.x
+                        - object->sprite->textureArea.width / 2,
+                    object->centerAnchor.y + object->spriteOffset.y
+                        - object->sprite->textureArea.height / 2
+                );
+            }
+        }
+    }
 }
 
 void freeObjects() 

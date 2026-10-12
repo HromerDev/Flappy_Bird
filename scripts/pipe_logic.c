@@ -1,13 +1,14 @@
 #include "pipe_logic.h"
 #include "player_logic.h"
+#include "../src/unit_system.h"
 #include <stdio.h>
 
-float pipeSpeed = 275;
-int pipeWidth = 100;
-int pipePairMinGap = 150;
-int pipePairMaxGap = 250;
-int pipeMinGap = 110;
-int pipeMaxGap = 170;
+float pipeSpeed = 33;
+int pipeWidth = 13;
+int pipePairMinGap = 18;
+int pipePairMaxGap = 30;
+int pipeMinGap = 14;
+int pipeMaxGap = 21;
 int score = 0;
 
 dynarray *allPipePairs;
@@ -16,7 +17,7 @@ void initPipePairs()
     allPipePairs = malloc(sizeof(dynarray)); 
     dynarray_init(allPipePairs, 1);
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 10; i++)
         spawnPipePair();
 }
 
@@ -28,22 +29,37 @@ void spawnPipePair()
 
     int currentGap = (rand() % (pipeMaxGap - pipeMinGap)) + pipeMinGap;
 
-    Rectangle pipe0RECT = {SCREENWIDTH,(rand() % (SCREENHEIGHT - currentGap)) - SCREENHEIGHT, pipeWidth, SCREENHEIGHT};
-
-    pipePair->pipes[0] = createObject(pipe0RECT, createSprite(pipe0RECT, TEXTURE_PIPE1, LAYERS_PIPES, 0), 0);
-
+    Rectangle pipe0RECT = {SCREENWIDTH / UNIT_PIXEL_SIZE,(rand() % ((int)(SCREENHEIGHT / UNIT_PIXEL_SIZE) - currentGap)) - SCREENHEIGHT / UNIT_PIXEL_SIZE, pipeWidth, SCREENHEIGHT / UNIT_PIXEL_SIZE};
+   
     if(allPipePairs->size > 0) 
     {
-        PipePair *lastPipe = allPipePairs->items[allPipePairs->size - 1];
-
-        int pairGap = (rand() % (pipePairMaxGap - pipePairMinGap)) + pipePairMinGap;
+        PipePair *lastPipe = allPipePairs->items[0];
         
-        float x = lastPipe->pipes[0]->topRightAnchor.x + pairGap;
+        for (int i = 1; i < allPipePairs->size; i++)
+        {
+            PipePair *temp = allPipePairs->items[i];
 
-        moveObject( pipePair->pipes[0], x, pipePair->pipes[0]->collider.y);
+            if (temp->pipes[0]->collider.x > lastPipe->pipes[0]->collider.x)        
+                lastPipe = temp; 
+        }
+            //int pairGap = (rand() % (pipePairMaxGap - pipePairMinGap)) + pipePairMinGap;
+        
+        pipe0RECT.x =
+            lastPipe->pipes[0]->collider.x / UNIT_PIXEL_SIZE
+            + lastPipe->pipes[0]->collider.width / UNIT_PIXEL_SIZE
+            + rand() % (pipePairMaxGap - pipePairMinGap)
+            + pipePairMinGap;
+
+
+        //pipe0RECT.x = lastPipe->pipes[0]->originalCollider.x + lastPipe->pipes[0]->originalCollider.width + pairGap;
+
+       // moveObject( pipePair->pipes[0], x, pipePair->pipes[0]->originalCollider.y);
     }
 
-    Rectangle pipe1RECT = (Rectangle) {pipePair->pipes[0]->collider.x,pipePair->pipes[0]->collider.y + pipePair->pipes[0]->collider.height + currentGap, pipeWidth, SCREENHEIGHT};
+    
+    pipePair->pipes[0] = createObject(pipe0RECT, createSprite(pipe0RECT, TEXTURE_PIPE1, LAYERS_PIPES, 0), 0);
+    
+    Rectangle pipe1RECT = (Rectangle) {pipePair->pipes[0]->originalCollider.x,pipePair->pipes[0]->originalCollider.y + SCREENHEIGHT / UNIT_PIXEL_SIZE + currentGap, pipeWidth, SCREENHEIGHT / UNIT_PIXEL_SIZE};
 
     pipePair->pipes[1] = createObject(pipe1RECT, createSprite(pipe1RECT, TEXTURE_PIPE2, LAYERS_PIPES, 0), 0);
 
@@ -51,26 +67,26 @@ void spawnPipePair()
     {
         .x = pipePair->pipes[0]->collider.x,
         .y = pipePair->pipes[0]->collider.y + pipePair->pipes[0]->collider.height,
-        .width = pipeWidth,
-        .height = currentGap,
+        .width = pipeWidth * UNIT_PIXEL_SIZE,
+        .height = currentGap * UNIT_PIXEL_SIZE,
     };
 
     dynarray_push(allPipePairs, pipePair);
 }
 
-void movePipePairs() 
+    void movePipePairs() 
 {
     if (allPipePairs->size == 0)
         return;
     
-    for(int i = 0; i < allPipePairs->size; i++) 
+    for (int i = allPipePairs->size - 1; i >= 0; i--) 
     {
         PipePair* temp = allPipePairs->items[i];
         
         for(int j = 0; j < 2; j++) 
             moveObjectRelative(temp->pipes[j], -pipeSpeed * GetFrameTime(), 0);
         
-        temp->pipeCenter.x -= pipeSpeed * GetFrameTime();
+        temp->pipeCenter.x -= pipeSpeed * UNIT_PIXEL_SIZE * GetFrameTime();
         
         if(temp->pipes[0]->topRightAnchor.x < 0) 
         {

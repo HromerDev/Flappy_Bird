@@ -20,7 +20,6 @@ int main()
             
             drawSprites();   
             //drawParticles();
-            recalculateUnitSize(1000, 1000);
             draw();
         EndDrawing();
         

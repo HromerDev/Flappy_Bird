@@ -6,6 +6,7 @@ extern Texture2D textureArray[10];
 
 typedef struct 
 {    
+    Rectangle originalArea;
     Vector2 centerAnchor;
     Rectangle textureArea;
     unsigned short opacity;
@@ -22,6 +23,7 @@ typedef struct
     Vector2 bottomRightAnchor;    
     Vector2 centerAnchor;
     Vector2 spriteOffset;
+    Rectangle originalCollider;
     Rectangle collider;
     Sprite *sprite;
     double angle;
@@ -56,6 +58,7 @@ void moveSprite(Sprite *sprite, float x, float y);
 void moveSpriteRelative(Sprite *sprite, float x, float y);
 void drawSprites();
 //void allObjectsLayerSort(); 
+void recalculateAllUnits();
 void freeObjects();
 void freeSprites();
 int returnObjectAmount();

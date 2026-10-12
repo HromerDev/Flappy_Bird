@@ -1,5 +1,5 @@
 #include "player_logic.h"
-
+#include "../src/unit_system.h"
 Player player;
 
 
@@ -7,7 +7,7 @@ void initPlayer(short w, short h)
 {
     player.playerObject = createObject((Rectangle) {0, 0, (float)(float)w /4, (float)h /4}, createSprite((Rectangle) {0, 0, w, h}, TEXTURE_PLAYER, LAYERS_PLAYER, 0), 0);
     player.holdTimer = 0;
-    moveObject(player.playerObject, 100, (float)SCREENHEIGHT / 2 - 25);
+    moveObject(player.playerObject, 12, ((float)SCREENHEIGHT / UNIT_PIXEL_SIZE - 6) / 2);
 }
 
 void processPlayerMovement() 
@@ -30,20 +30,20 @@ void processPlayerRotation()
 
 void processPlayerAcceleration() 
 {
-    player.acceleration += 1200 * GetFrameTime();
+    player.acceleration += 145 * GetFrameTime();
 
     if(player.playerObject->collider.y > SCREENHEIGHT - player.playerObject->collider.height) 
     {
-        moveObject(player.playerObject, player.playerObject->collider.x, SCREENHEIGHT - player.playerObject->collider.height);
+        moveObject(player.playerObject, player.playerObject->collider.x / UNIT_PIXEL_SIZE, (SCREENHEIGHT - player.playerObject->collider.height) / UNIT_PIXEL_SIZE);
         player.acceleration = 0;
     }       
 }
 
 void playerJump() 
 {
-    player.holdTimer -= 450 * GetFrameTime();    
+    player.holdTimer -= 55 * GetFrameTime();    
     if(player.playerObject->topLeftAnchor.y > 0)
-        player.acceleration = -300 + player.holdTimer;
+        player.acceleration = -36 + player.holdTimer;
     else
         player.acceleration = 0;
 

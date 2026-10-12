@@ -1,6 +1,7 @@
 #include "game_manager.h"
 #include "pipe_logic.h"
 #include "player_logic.h"
+#include "../src/unit_system.h"
 int SCREENWIDTH = 500;
 int SCREENHEIGHT = 500;
 int FPS = 0;
@@ -11,6 +12,7 @@ void start() //initializations
 {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, WINDOWNAME);
     SetTargetFPS(FPS);
+        recalculateUnitSize(1920, 1080);
 }
 
 void gameStart()
@@ -19,17 +21,17 @@ void gameStart()
     initTimer();
     initParticleSystem();
 
-    initPlayer(35, 35);
+    initPlayer(4, 4);
     initPipePairs();
     score = 0;
-
     particle = createParticleHandler((Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
     configureParticleHandler(particle, (Vector2){0, 5,}, 
                                         (Vector2){0, 360},
                                         (Vector2){25,45},                                        
                                         0.5, 20);
-}
 
+particle->sprite->opacity = 0;
+}
 
 void restart() 
 {
@@ -37,7 +39,7 @@ void restart()
     gameStart();
 }
 void update() //input handling, logic
-{/*   
+{   
     if(checkPipePairCollisions()) 
     {           
         gameOver = true;
@@ -66,8 +68,8 @@ void update() //input handling, logic
     handleParticles();
 
     moveParticleHandler(particle, player.playerObject->centerAnchor);    
-    moveParticlesRelative(particle, (Vector2){-275 * GetFrameTime(), 0});
-  */  
+    moveParticlesRelative(particle, (Vector2){-33 * UNIT_PIXEL_SIZE * GetFrameTime(), 0});
+    
 }
 
 void draw() //drawing a frame (primarely for text)

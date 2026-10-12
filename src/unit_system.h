@@ -7,6 +7,4 @@ void recalculateUnitSize(int newScreenWidth, int newScreenHeight);
 
 
 
-
-
 #endif // !UNIT_SYSTEM_H
