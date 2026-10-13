@@ -2,6 +2,7 @@
 #include "pipe_logic.h"
 #include "player_logic.h"
 #include "../src/unit_system.h"
+#include "raylib.h"
 int SCREENWIDTH = 500;
 int SCREENHEIGHT = 500;
 int FPS = 0;
@@ -54,10 +55,13 @@ void update() //input handling, logic
     }
 
     if(IsKeyDown(KEY_SPACE))
-    playerJump();
-    else   
+        playerJump();
+    else if(IsKeyDown(KEY_S))
+        playerForceFall();
+    else {
+        player.holdTimerDrop = 0;
         player.holdTimer = 0;
-
+    }
     processPlayerMovement();
     processPlayerAcceleration();
     processPlayerRotation();

@@ -49,3 +49,12 @@ void playerJump()
 
     emitParticles(particle);
 }
+
+void playerForceFall() 
+{
+    player.holdTimerDrop = 100 * GetFrameTime();    
+    if(player.playerObject->topLeftAnchor.y > 0)
+        player.acceleration += player.holdTimerDrop ;
+    else
+        player.acceleration = 0;
+}

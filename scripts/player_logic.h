@@ -8,6 +8,7 @@ typedef struct
     short speed;
     Object* playerObject;
     float holdTimer;
+    float holdTimerDrop;
 
 } Player;
 
@@ -18,6 +19,6 @@ void processPlayerMovement();
 void processPlayerRotation();
 void processPlayerAcceleration();
 void playerJump();
+void playerForceFall();
 void returnPlayer(Player *playerInfo);
-
 #endif

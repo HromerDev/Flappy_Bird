@@ -5,8 +5,8 @@
 
 float pipeSpeed = 33;
 int pipeWidth = 13;
-int pipePairMinGap = 18;
-int pipePairMaxGap = 30;
+int pipePairMinGap = 12;
+int pipePairMaxGap = 25;
 int pipeMinGap = 14;
 int pipeMaxGap = 21;
 int score = 0;
