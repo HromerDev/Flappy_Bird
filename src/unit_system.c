@@ -9,7 +9,7 @@ int scaler = 60;
 void recalculateUnitSize(int newScreenWidth, int newScreenHeight)
 {
     double shortestScreenSide = (newScreenWidth < newScreenHeight) ? newScreenWidth : newScreenHeight;
-    
+    //double shortestScreenSide = newScreenHeight;
     double newUnitSize = shortestScreenSide / scaler;
     SCREENWIDTH = newScreenWidth;
     SCREENHEIGHT = newScreenHeight;

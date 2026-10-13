@@ -8,7 +8,8 @@
 
 int main()
 {
-    srand(time(NULL));
+    SetRandomSeed(time(NULL));
+    //srand(time(NULL));
     start();
     gameStart();
     

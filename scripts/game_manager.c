@@ -5,14 +5,14 @@
 int SCREENWIDTH = 500;
 int SCREENHEIGHT = 500;
 int FPS = 0;
-bool gameOver = false;
+bool gameOver = true;
 
 ParticleHandler* particle;
 void start() //initializations
 {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, WINDOWNAME);
     SetTargetFPS(FPS);
-        recalculateUnitSize(1920, 1080);
+    recalculateUnitSize(500, 500);
 }
 
 void gameStart()
@@ -25,9 +25,9 @@ void gameStart()
     initPipePairs();
     score = 0;
     particle = createParticleHandler((Vector2){0,0}, createSprite((Rectangle){0,0,1,1}, TEXTURE_PARTICLE, LAYERS_PARTICLE, 0));
-    configureParticleHandler(particle, (Vector2){0, 5,}, 
+    configureParticleHandler(particle, (Vector2){0, 2}, 
                                         (Vector2){0, 360},
-                                        (Vector2){25,45},                                        
+                                        (Vector2){2,5},                                        
                                         0.5, 20);
 
 particle->sprite->opacity = 0;
@@ -40,7 +40,7 @@ void restart()
 }
 void update() //input handling, logic
 {   
-    if(checkPipePairCollisions()) 
+    if(checkPipePairCollisions() || gameOver) 
     {           
         gameOver = true;
 
@@ -83,7 +83,7 @@ void draw() //drawing a frame (primarely for text)
     Color frameColor = (frameRate > FPS * 0.8) ? GREEN : RED;
     
     DrawText(TextFormat("FPS:%d", frameRate), 1, SCREENHEIGHT - 20, 20, frameColor);
-    /**/
+    /*
     (checkPipePairCollisions()) ? DrawText("COLLIDED", 1, SCREENHEIGHT - 40, 20, BLACK) : DrawText("NOT COLLIDED", 0, SCREENHEIGHT - 40, 20, BLACK);
     DrawText(TextFormat("Pipes: %d", returnPipeAmount()), 1, SCREENHEIGHT - 60, 20, BLACK);    
     DrawText(TextFormat("X:%.2f Y:%.2f", player.playerObject->topLeftAnchor.x, player.playerObject->topLeftAnchor.y), 1, SCREENHEIGHT - 80, 20, GOLD);
@@ -92,6 +92,7 @@ void draw() //drawing a frame (primarely for text)
     DrawText(TextFormat("Angle: %.2f", player.playerObject->sprite->angle), 1, SCREENHEIGHT - 140, 20, BLACK);
     (layersSortedCorrectly()) ? DrawText("Layers sorted correctly", 1, SCREENHEIGHT - 160, 20, GREEN) : DrawText("Layers sorted wrongly", 1, SCREENHEIGHT - 160, 20, RED);
     DrawText(TextFormat("Particles Active: %d/%d", returnParticleAliveAmount(particle), particle->particleAmount), 1, SCREENHEIGHT - 180, 20, BLACK);
+    */
 }
 
 

@@ -26,10 +26,9 @@ void spawnPipePair()
     PipePair *pipePair = malloc(sizeof(PipePair));
 
     pipePair->scored = false;
-
-    int currentGap = (rand() % (pipeMaxGap - pipeMinGap)) + pipeMinGap;
-
-    Rectangle pipe0RECT = {SCREENWIDTH / UNIT_PIXEL_SIZE,(rand() % ((int)(SCREENHEIGHT / UNIT_PIXEL_SIZE) - currentGap)) - SCREENHEIGHT / UNIT_PIXEL_SIZE, pipeWidth, SCREENHEIGHT / UNIT_PIXEL_SIZE};
+    int currentGap = GetRandomValue(pipeMinGap, pipeMaxGap);
+    //int currentGap = (rand() % (pipeMaxGap - pipeMinGap)) + pipeMinGap;
+    Rectangle pipe0RECT = {SCREENWIDTH / UNIT_PIXEL_SIZE,GetRandomValue(0, (int)(SCREENHEIGHT / UNIT_PIXEL_SIZE) - currentGap) - SCREENHEIGHT / UNIT_PIXEL_SIZE, pipeWidth, SCREENHEIGHT / UNIT_PIXEL_SIZE};
    
     if(allPipePairs->size > 0) 
     {
@@ -42,21 +41,10 @@ void spawnPipePair()
             if (temp->pipes[0]->collider.x > lastPipe->pipes[0]->collider.x)        
                 lastPipe = temp; 
         }
-            //int pairGap = (rand() % (pipePairMaxGap - pipePairMinGap)) + pipePairMinGap;
         
-        pipe0RECT.x =
-            lastPipe->pipes[0]->collider.x / UNIT_PIXEL_SIZE
-            + lastPipe->pipes[0]->collider.width / UNIT_PIXEL_SIZE
-            + rand() % (pipePairMaxGap - pipePairMinGap)
-            + pipePairMinGap;
-
-
-        //pipe0RECT.x = lastPipe->pipes[0]->originalCollider.x + lastPipe->pipes[0]->originalCollider.width + pairGap;
-
-       // moveObject( pipePair->pipes[0], x, pipePair->pipes[0]->originalCollider.y);
+        pipe0RECT.x = lastPipe->pipes[0]->collider.x / UNIT_PIXEL_SIZE + lastPipe->pipes[0]->collider.width / UNIT_PIXEL_SIZE + GetRandomValue(pipePairMinGap, pipePairMaxGap - 1);
     }
 
-    
     pipePair->pipes[0] = createObject(pipe0RECT, createSprite(pipe0RECT, TEXTURE_PIPE1, LAYERS_PIPES, 0), 0);
     
     Rectangle pipe1RECT = (Rectangle) {pipePair->pipes[0]->originalCollider.x,pipePair->pipes[0]->originalCollider.y + SCREENHEIGHT / UNIT_PIXEL_SIZE + currentGap, pipeWidth, SCREENHEIGHT / UNIT_PIXEL_SIZE};
