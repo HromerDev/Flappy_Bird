@@ -1,4 +1,5 @@
 #include "dynamic_array.h"
+#include "raylib.h"
 #include "unit_system.h" 
 #include "object.h"
 #include "stdio.h"
@@ -6,6 +7,7 @@
 #include <time.h>
 
 Texture2D textureArray[10];
+Sound sounds[10];
 dynarray *allObjects;
 dynarray *allSprites;   
 
@@ -21,6 +23,9 @@ void initTextures()
     textureArray[TEXTURE_PIPE1] = LoadTexture("assets/pipe1.png");
     textureArray[TEXTURE_PIPE2] = LoadTexture("assets/pipe2.png");
     textureArray[TEXTURE_PARTICLE] = LoadTexture("assets/particle4.png");
+
+    sounds[SOUND_DEATH] = LoadSound("assets/death.wav");
+    sounds[SOUND_SCORE] = LoadSound("assets/score.wav");
 }
 
 Object* createObject(Rectangle collider, Sprite *sprite, double angle)

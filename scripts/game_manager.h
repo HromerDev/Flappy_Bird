@@ -9,9 +9,10 @@
 
 extern int SCREENWIDTH;
 extern int SCREENHEIGHT;
-
 extern int FPS;
-#define WINDOWNAME "FLAPPY BIRD (DEMO)"
+
+extern bool gameOver;
+#define WINDOWNAME "Flappy Bird"
 
 extern ParticleHandler* particle;
 

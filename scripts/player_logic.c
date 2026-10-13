@@ -1,5 +1,7 @@
 #include "player_logic.h"
 #include "../src/unit_system.h"
+#include "../src/object.h"
+#include "raylib.h"
 Player player;
 
 
@@ -46,7 +48,6 @@ void playerJump()
         player.acceleration = -36 + player.holdTimer;
     else
         player.acceleration = 0;
-
     emitParticles(particle);
 }
 
@@ -57,4 +58,6 @@ void playerForceFall()
         player.acceleration += player.holdTimerDrop ;
     else
         player.acceleration = 0;
+
+    emitParticles(particle);
 }

@@ -3,7 +3,7 @@
 #include "raylib.h"
 
 extern Texture2D textureArray[10];
-
+extern Sound sounds[10];
 typedef struct 
 {    
     Rectangle originalArea;
@@ -29,6 +29,12 @@ typedef struct
     double angle;
 } Object;
 
+enum Sounds 
+{
+    SOUND_DEATH,
+    SOUND_SCORE,
+
+};
 enum Textures  
 {
     TEXTURE_PIPE1,

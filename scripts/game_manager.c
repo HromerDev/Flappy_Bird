@@ -3,15 +3,16 @@
 #include "player_logic.h"
 #include "../src/unit_system.h"
 #include "raylib.h"
-int SCREENWIDTH = 1920;
-int SCREENHEIGHT = 1080;
+
+int SCREENWIDTH = 500;
+int SCREENHEIGHT = 500;
 int FPS = 0;
 bool gameOver = true;
-
 ParticleHandler* particle;
 void start() //initializations
 {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, WINDOWNAME);
+    InitAudioDevice();
     SetTargetFPS(FPS);
     SetWindowState(FLAG_VSYNC_HINT);
     ToggleFullscreen();
@@ -31,7 +32,7 @@ void gameStart()
     configureParticleHandler(particle, (Vector2){0, 2}, 
                                         (Vector2){0, 360},
                                         (Vector2){2,5},                                        
-                                        0.5, 20);
+                                        0.3, 80);
 
 particle->sprite->opacity = 0;
 }
@@ -43,10 +44,9 @@ void restart()
 }
 void update() //input handling, logic
 {   
-    if(checkPipePairCollisions() || gameOver) 
-    {           
-        gameOver = true;
 
+    if(gameOver || checkPipePairCollisions()) 
+    {           
         if(IsKeyPressed(KEY_SPACE)) 
         {
             gameOver = false;
@@ -55,8 +55,9 @@ void update() //input handling, logic
         return;
     }
 
-    if(IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W) || IsMouseButtonDown(MOUSE_LEFT_BUTTON))
+    if(IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W) || IsMouseButtonDown(MOUSE_LEFT_BUTTON)){
         playerJump();
+    }
     else if(IsKeyDown(KEY_S) || IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
         playerForceFall();
     else {
@@ -91,7 +92,7 @@ void draw() //drawing a frame (primarely for text)
     }
 
     else 
-        DrawText(TextFormat("%d",score), 10, 10, 100, GOLD);  
+        DrawText(TextFormat("%d",score), 10, 10, 200, GOLD);  
 
     int frameRate = 1 / GetFrameTime();
     Color frameColor = (frameRate > FPS * 0.8) ? GREEN : RED;

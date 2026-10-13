@@ -88,8 +88,12 @@ void handleParticles()
 
         temp->timeAlive += delta;
 
-        if(temp->timeAlive > temp->particleAliveTime)
+        if(temp->timeAlive >= temp->particleAliveTime) {
+
             temp->isEnabled = false;
+            temp->sprite->opacity = 0;
+            continue;
+        }
 
         temp->sprite->opacity = 255 * (1.0f - temp->timeAlive / temp->particleAliveTime);
         

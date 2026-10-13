@@ -1,6 +1,9 @@
 #include "pipe_logic.h"
 #include "player_logic.h"
 #include "../src/unit_system.h"
+#include "raylib.h"
+#include "../src/object.h"
+#include "game_manager.h"
 #include <stdio.h>
 
 float pipeSpeed = 33;
@@ -99,12 +102,21 @@ bool checkPipePairCollisions()
   
         for(int j = 0; j < 2; j++)              
             if(CheckCollisionRecs(player.playerObject->collider, temp->pipes[j]->collider))  
+            {   
+                if(!gameOver) 
+                {
+                    PlaySound(sounds[SOUND_DEATH]);
+                    gameOver = true;
+                }
+
                 return true;  
+            }
 
         if(CheckCollisionRecs(player.playerObject->collider, temp->pipeCenter)) 
         {
             if(!temp->scored) 
             {
+                PlaySound(sounds[SOUND_SCORE]);
                 temp->scored = true;
                 score++;            
             }

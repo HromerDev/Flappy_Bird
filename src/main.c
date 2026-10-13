@@ -9,24 +9,20 @@
 int main()
 {
     SetRandomSeed(time(NULL));
-    //srand(time(NULL));
     start();
     gameStart();
     
     while (!WindowShouldClose()) 
     {        
         update();
-
+        iterateTimers();
+        
         BeginDrawing();
-            
             drawSprites();   
-            //drawParticles();
             draw();
         EndDrawing();
-        
-        iterateTimers();
     }       
-        
+
     end();
     freeCoreComponents();
     CloseWindow();        
