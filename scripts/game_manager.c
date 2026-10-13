@@ -3,8 +3,8 @@
 #include "player_logic.h"
 #include "../src/unit_system.h"
 #include "raylib.h"
-int SCREENWIDTH = 500;
-int SCREENHEIGHT = 500;
+int SCREENWIDTH = 1920;
+int SCREENHEIGHT = 1080;
 int FPS = 0;
 bool gameOver = true;
 
@@ -13,7 +13,9 @@ void start() //initializations
 {
     InitWindow(SCREENWIDTH, SCREENHEIGHT, WINDOWNAME);
     SetTargetFPS(FPS);
-    recalculateUnitSize(500, 500);
+    SetWindowState(FLAG_VSYNC_HINT);
+    ToggleFullscreen();
+    recalculateUnitSize(GetScreenWidth(), GetScreenHeight());
 }
 
 void gameStart()
@@ -49,14 +51,13 @@ void update() //input handling, logic
         {
             gameOver = false;
             restart();
-                        
         }     
         return;
     }
 
-    if(IsKeyDown(KEY_SPACE))
+    if(IsKeyDown(KEY_SPACE) || IsKeyDown(KEY_W) || IsMouseButtonDown(MOUSE_LEFT_BUTTON))
         playerJump();
-    else if(IsKeyDown(KEY_S))
+    else if(IsKeyDown(KEY_S) || IsMouseButtonDown(MOUSE_BUTTON_RIGHT))
         playerForceFall();
     else {
         player.holdTimerDrop = 0;
@@ -78,8 +79,17 @@ void update() //input handling, logic
 
 void draw() //drawing a frame (primarely for text)
 {   
-    if(gameOver)
-        DrawText("GAME OVER! PRESS SPACE TO GO AGAIN", 10, 10, 30, GOLD);
+    if(gameOver) 
+    {
+        DrawText(TextFormat("%d points", score), 10, 10, 30, GREEN);
+        DrawText("GAME OVER! PRESS SPACE TO GO AGAIN", 10, 45, 30, YELLOW);
+
+
+        DrawText("Hold space, W or left mouse button to fly up", 10, 105, 30, YELLOW);
+        DrawText("Hold S or right mouse button to fall faster", 10, 140, 30, YELLOW);
+
+    }
+
     else 
         DrawText(TextFormat("%d",score), 10, 10, 100, GOLD);  
 
