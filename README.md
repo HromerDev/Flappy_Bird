@@ -1,6 +1,6 @@
 # Flappy bird game made to test raylib + C engine capabilities
 
-## Game download: [Itch.io Link](https://hromerdev.itch.io/flappy)
+**Game download:** [Itch.io Link](https://hromerdev.itch.io/flappy)
 
 ## Build:
 
